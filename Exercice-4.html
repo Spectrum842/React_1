@@ -36,6 +36,8 @@
 
         class App extends React.Component {
 
+
+
             even(){
                 const numbersEven = [];
 
@@ -47,22 +49,36 @@
                 return numbersEven;
             }
 
+            odd(){
+                const numbersOdd = [];
+
+                for (let i = 1; i <= 100; i++) {
+                    
+                    if( i % 2 != 0 ) numbersOdd.push(i);
+                }
+                
+                return numbersOdd;
+            }
+
             render() {
                
                 return (
                     <div className="container">
-                        <h1>Number Even </h1>
-                        <ul>
+                        <h1>{this.props.message} </h1>
+                        <h2>Exercice 4 : Even&Odd sous condition</h2>
+                        <p>{this.props.subtitle}</p>
+                        {this.props.numberEven ? <ul>
                             {this.even().map((num, i) => <li key={i}>{num}</li>)}
-                        </ul>
+                        </ul> :null }
+                        {this.props.numberOdd ? <ul>
+                            {this.odd().map((num, i) => <li key={i}>{num}</li>)}
+                        </ul> :null }
                     </div>
                 )
             }
         }
-        
-
         ReactDOM.render(
-            <App />,
+            <App message="Hello React" subtitle="Enjoy !" numberEven = {false} numberOdd = {true} />,
             document.getElementById('root')
         );
        
