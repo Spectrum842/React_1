@@ -23,52 +23,35 @@
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        class App extends React.Component {
-            constructor(props){
+        class CLock extends React.Component {
+            constructor(props) {
                 super(props);
+
                 this.state = {
-                    count : 0
-                }
+                    timer: new Date
+                };
 
-                // this.time();
-
-                console.log('counstructor')
-               
-            }
-
-            componentDidMount() {
-                // Update state
                 setInterval(
                     () => {
-                        // this.state.count = this.state.count + 1 ;
-                        this.setState({ count: this.state.count + 1 })
+                        this.setState({ timer : new Date })
                     }, 1000
                 )
             }
 
-            // time(){
-            //     setTimeout(() => {
-                  
-                    
-            //     }, 1000)
-            // }
-
-
             render() {
-                console.log('render')
                 return (
-                    <div className="container">
-                        <h1>Horloge</h1>
-                        <p>{this.state.count}</p>
+                    <div>
+                        <p>Timer: {this.state.timer.toLocaleTimeString()} </p>
                     </div>
-                )
+                );
             }
         }
-        
+
         ReactDOM.render(
-            <App />,
+            <CLock />,
             document.getElementById('root')
         );
+
     </script>
 </body>
 
