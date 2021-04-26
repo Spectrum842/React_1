@@ -24,19 +24,20 @@
     <div id="root"></div>
     <script type="text/babel">
 
-        class Number extends React.Component {
+        class Numbers extends React.Component {
 
             render(){
+                const { numbers } = this.props;
 
                 return(
-                    <p>{this.props.number}</p>
+                    <ul>
+                        {numbers.map((num, i) => <li key={i}>{num}</li>)}
+                    </ul>
                 )
             }
         }
 
         class App extends React.Component {
-
-
 
             even(){
                 const numbersEven = [];
@@ -50,39 +51,55 @@
             }
 
             odd(){
-                const numbersOdd = [];
+                const numberOdd = [];
 
                 for (let i = 1; i <= 100; i++) {
                     
-                    if( i % 2 != 0 ) numbersOdd.push(i);
+                    if( i % 2 !== 0 ) numberOdd.push(i);
                 }
                 
-                return numbersOdd;
+                return numberOdd;
+            }
+
+            run(){
+                const { even, odd } = this.props;
+                const numbers = [];
+
+                if(even && odd === false) return this.even();
+                if(odd && even === false) return this.odd();
+
+                if(even && odd) {
+                    for (let i = 1; i <= 100; i++) numbers.push(i);
+
+                    return numbers;
+                }
+
+                return numbers;
+                
             }
 
             render() {
                
-                return (
+                if( this.run().length > 0 )
+                    return (
+                        <div className="container">
+                            <h1>Number Even </h1>
+                            <Numbers numbers={this.run()} />
+                        </div>
+                    )
+
+                return(
                     <div className="container">
-                        <h1>{this.props.message} </h1>
-                        <h2>Exercice 4 : Even&Odd sous condition</h2>
-                        <p>{this.props.subtitle}</p>
-                        {this.props.numberEven ? <ul>
-                            {this.even().map((num, i) => <li key={i}>{num}</li>)}
-                        </ul> :null }
-                        {this.props.numberOdd ? <ul>
-                            {this.odd().map((num, i) => <li key={i}>{num}</li>)}
-                        </ul> :null }
+                        <p>Aucune valeur ...</p>
                     </div>
                 )
             }
         }
+        
         ReactDOM.render(
-            <App message="Hello React" subtitle="Enjoy !" numberEven = {false} numberOdd = {true} />,
+            <App odd={true} even={true} />,
             document.getElementById('root')
         );
-       
-
     </script>
 </body>
 
