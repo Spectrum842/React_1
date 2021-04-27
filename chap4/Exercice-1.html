@@ -9,60 +9,136 @@
 
     <!-- babel => compilation du JSX -->
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
-    <style>
-        .heading {
-            color: purple;
-        }
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
-        .principal {
-            background-color: beige;
-        }
-    </style>
+    
 </head>
 
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        class StarLine extends React.Component{
-            constructor(props){
+
+        /*
+           affichez les étoiles ligne par ligne : deux composants
+        */
+        const container = document.getElementById('root');
+
+        class Line extends React.Component {
+            constructor(props) {
                 super(props);
-                this.state = { stars : "",}
+
+                this.state = {
+                    star: '',
+                    count: 0,
+                    progress: false,
+                    color : 'black',
+                };
+
+                this.interval = null;
             }
 
-            componentDidMount(){
-                setInterval(
-                    ()=>{
-                        const starLine = this.state.stars + "* "
-                        this.setState({ stars: starLine})
+            draw() {
+                // définition d'une variable de classe
+                this.interval = setInterval(
+                    () => {
+                        this.setState({
+                            count: this.state.count + 1,
+                            star: this.state.star + ' *',
+                        })
                     }, 500
                 )
+
+                if(this.state.count == 20){
+                    this.setState ({color : this.state.color + 'red'});
+                    console.log({color : this.state.color})
+                }
+            }
+            componentDidUpdate(prevProps, prevStates) {
+
+                if (this.state.count === 20) {
+                    clearInterval(this.interval);
+                }
+
+                if (this.props.progress != prevProps.progress && this.state.count === 0) {
+                    console.log(this.props.number, this.props.progress)
+                    this.draw();
+                }
+
+                if(this.state.count == 20 && this.state.color == 'black') this.setState({color:'red'})
+                }
+
+            componentDidMount() {
+                if (this.props.number === 1) this.draw();
             }
 
-            render(){
-                return(
+            render() {
+                const { color, star } = this.state;
+                return (
+                    <div className="container special " style={{color : color}}>
+                        {this.state.count}
+                        {star}
+                    </div >
+                );
+            }
+        }
+
+        class App extends React.Component {
+            constructor(props) {
+                super(props);
+
+                this.state = {
+                    numberBar: 1
+                }
+
+                // définition d'une variable de classe rien avoir avec le state pur JS
+                this.interval = setInterval(
+                    () => {
+                        this.setState({
+                            numberBar: this.state.numberBar + 1
+                        })
+                    }, 500 * 20
+                )
+            }
+
+            componentDidUpdate(prevProps, prevStates) {
+
+                if(this.state.numberBar === 10){
+                    clearInterval(this.interval);
+                }
+            }
+
+            render() {
+
+                return (
                     <div className="container">
-                        <h1>StarLine</h1>
-                        {this.state.stars}
+                        {this.state.numberBar}
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num, i) => {
+
+                            return (
+                                <div>
+                                    
+                                    <Line
+                                        key={i}
+                                        number={num}
+                                        progress={this.state.numberBar == num}
+                                    />
+                                </div>
+                            )
+                        }
+
+                        )}
                     </div>
                 )
             }
         }
 
-
-        class App extends React.Component{
-
-            render(){
-                return(
-                    <div>
-                        <StarLine />
-                    </div>
-                )
-            }
-        }
         ReactDOM.render(
             <App />,
-            document.getElementById('root')
+            container
         );
+
     </script>
 </body>
 
