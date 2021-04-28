@@ -6,118 +6,83 @@
     <title>Hello React</title>
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- babel => compilation du JSX -->
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <style>
-        .app_btn {
-            margin: 2rem;
+        .box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-top: 2%;
         }
 
-        .app__center {
-            text-align: center;
-            font-size: 2rem;
+        .box > div {
+            width: 700px;
+            height: 100px;
+            font-size: 2.5rem;
+            font-weight: bold;
         }
     </style>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 
 <body>
     <div id="root"></div>
     <script type="text/babel">
-        const container = document.getElementById('root');
-        const SECOND = 1000;
-
-        class Counter extends React.Component {
-            constructor(props) {
+        const CONTAINER = document.getElementById('root');
+        
+        class App extends React.Component{
+            constructor(props){
                 super(props);
                 this.state = {
-                    count: 0,
-                    active: false
+                    count : 0,
+                    message : '',
+                    disabled : false
+                };
+
+                this.increment = this.increment.bind(this);
+                this.decrement = this.decrement.bind(this);
+            }
+
+            increment(){
+               
+                this.setState({ count : this.state.count + 1, message : '',  disabled : false }) ;
+            }
+
+            decrement(){
+
+                if( this.state.count === 0 ){
+
+                    this.setState({message : 'Attention vous ne pouvez pas décrémenter en dessous de 0', disabled : true}) ;
+
+                    return;
                 }
 
-                this.start = this.start.bind(this); // on bind le this de la class à la fonction start sinon start se réfère le sien
-                this.stop = this.stop.bind(this);
-                this.reset = this.reset.bind(this);
-
-                this.interval = null;
+                this.setState({ count : this.state.count - 1, message : '', disabled : false }) ;
             }
 
-            start() {
-                clearInterval(this.interval);
+            render(){
 
-                this.setState({ active: true })
-
-                this.interval = setInterval(() => {
-                    this.setState({
-                        count: this.state.count + this.props.step,
-                    })
-                }, SECOND)
-            }
-
-            stop() {
-                clearInterval(this.interval);
-                this.setState({ active: false });
-            }
-
-            reset() {
-                clearInterval(this.interval);
-                this.setState({ active: false, count: 0 });
-            }
-
-            render() {
-                const { count, active } = this.state;
-                const { step } = this.props; // { step : 1 } passer en props dans <Counter  step={1} /> dans App
+                const { count, message, disabled } = this.state;
 
                 return (
-                    <div>
-                        <button
-                            className="btn btn-primary app_btn"
-                            onClick={this.start}
-                            disabled={active}
-                        >
-                            Start + {step}
-                        </button>
-                        <button
-                            className="btn btn-primary app_btn"
-                            disabled={!active}
-                            onClick={this.stop}
-                        >
-                            Stop
-                        </button>
-                        {(count >= 1 || count >= 2) ?
-                            <button
-                                className="btn btn-primary app_btn"
-                                onClick={this.reset}
-                            >
-                                reset
-                            </button> :
-                            null
-                        }
-                        <p className="app__center">{count}</p>
-                    </div>
-                );
-            }
-        }
-
-        class App extends React.Component {
-
-            render() {
-
-                return (
-                    <div>
-                        <Counter step={1} />
-                        <Counter step={2} />
+                    <div className="main">
+                        <div>
+                            <p>Counter : {count}</p>
+                            {/* le ET passif n'avalue pas la deuxième condition si la première est false */}
+                            { message !== '' && (
+                                <p>{message}</p>
+                            )}
+                            <p><button onClick={this.increment}>+1</button></p>
+                            <p><button disabled={disabled} onClick={this.decrement}> -1</button></p>
+                        </div>
                     </div>
                 )
             }
         }
 
-        ReactDOM.render(
-            <App />,
-            container
-        );
-
-
+        ReactDOM.render(<App />, CONTAINER);
     </script>
 </body>
 
